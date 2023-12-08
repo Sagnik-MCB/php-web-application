@@ -24,7 +24,7 @@ include 'header.php';
                 <tr>
                     <td><?= $item['id']; ?></td>
                     <td><?= $item['name']; ?></td>
-                    <td><img src="images/<?= $item['image']; ?>" alt="Image" class="img-thumbnail"></td>
+                    <td><img src="images/<?= $item['image']; ?>" alt="Image" class="img-thumbnail" style="width: 100px; height: 100px;"></td>
                     <td><?= $item['address']; ?></td>
                     <td><?= $item['gender']; ?></td>
                     <td>
@@ -36,5 +36,14 @@ include 'header.php';
             <?php endforeach; ?>
         </tbody>
     </table>
+    <script>
+        // Async loading for images ensuring smooth scrolling
+        document.addEventListener('DOMContentLoaded', function () {
+            const images = document.querySelectorAll('img');
+            images.forEach(img => {
+                img.setAttribute('loading', 'lazy');
+            });
+        });
+    </script>
 </body>
 </html>
