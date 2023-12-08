@@ -7,19 +7,52 @@ $data = [
         'address' => 'Test Address',
         'gender' => 'Male',
     ],
+    [
+        'id' => 2,
+        'name' => 'Tester Two',
+        'image' => 'test2.jpg',
+        'address' => 'Test Address 2',
+        'gender' => 'Female',
+    ],
     // Add more data as needed
 ];
 
-// Sort data based on user input (Name or ID)
-if (isset($_GET['sort'])) {
-    $sortKey = $_GET['sort'];
-    if ($sortKey === 'name') {
+// Function to toggle sorting order
+function toggleOrder($currentOrder)
+{
+    return $currentOrder === 'asc' ? 'desc' : 'asc';
+}
+
+// Check if sorting is requested for ID
+$sortOrderByID = 'asc'; // Default sorting order
+if (isset($_GET['sort']) && $_GET['sort'] === 'id') {
+    $sortOrderByID = toggleOrder($_GET['order']);
+    if ($sortOrderByID === 'asc') {
+        // Sort in ascending order
+        usort($data, function ($a, $b) {
+            return $a['id'] - $b['id'];
+        });
+    } else {
+        // Sort in descending order
+        usort($data, function ($a, $b) {
+            return $b['id'] - $a['id'];
+        });
+    }
+}
+
+// Check if sorting is requested for Name
+$sortOrderByName = 'asc'; // Default sorting order
+if (isset($_GET['sort']) && $_GET['sort'] === 'name') {
+    $sortOrderByName = toggleOrder($_GET['order']);
+    if ($sortOrderByName === 'asc') {
+        // Sort in ascending order
         usort($data, function ($a, $b) {
             return strcmp($a['name'], $b['name']);
         });
-    } elseif ($sortKey === 'id') {
+    } else {
+        // Sort in descending order
         usort($data, function ($a, $b) {
-            return $a['id'] - $b['id'];
+            return strcmp($b['name'], $a['name']);
         });
     }
 }
@@ -40,8 +73,8 @@ if (isset($_GET['sort'])) {
     <table border="1">
         <thead>
             <tr>
-                <th><a href="?sort=id">ID</a></th>
-                <th><a href="?sort=name">Name</a></th>
+                <th><a href="?sort=id&order=<?= $sortOrderByID ?>">ID</a></th>
+                <th><a href="?sort=name&order=<?= $sortOrderByName ?>">Name</a></th>
                 <th>Image</th>
                 <th>Address</th>
                 <th>Gender</th>
