@@ -6,8 +6,9 @@ include 'phpScripts.php';
 // Include header
 include 'header.php';
 ?>
+
 <body>
-    <table border="1">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th><a href="?sort=id&order=<?= $sortOrderByID ?>">ID</a></th>
@@ -23,18 +24,17 @@ include 'header.php';
                 <tr>
                     <td><?= $item['id']; ?></td>
                     <td><?= $item['name']; ?></td>
-                    <td><img src="images/<?= $item['image']; ?>" alt="Image"></td>
+                    <td><img src="images/<?= $item['image']; ?>" alt="Image" class="img-thumbnail"></td>
                     <td><?= $item['address']; ?></td>
                     <td><?= $item['gender']; ?></td>
                     <td>
-                        <button>Edit</button>
-                        <button>Delete</button>
-                        <button>View</button>
+                        <button class="btn btn-primary btn-sm">Edit</button>
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                        <button class="btn btn-info btn-sm">View</button>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
-
 </body>
 </html>
