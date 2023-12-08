@@ -1,4 +1,5 @@
 <?php
+// Below is dummy data for the application
 $data = [
     [
         'id' => 1,
@@ -23,7 +24,7 @@ function toggleOrder($currentOrder)
     return $currentOrder === 'asc' ? 'desc' : 'asc';
 }
 
-// Check if sorting is requested for ID
+// Sorting data by ID
 $sortOrderByID = 'asc'; // Default sorting order
 if (isset($_GET['sort']) && $_GET['sort'] === 'id') {
     $sortOrderByID = toggleOrder($_GET['order']);
@@ -40,7 +41,7 @@ if (isset($_GET['sort']) && $_GET['sort'] === 'id') {
     }
 }
 
-// Check if sorting is requested for Name
+// Sorting data by Name
 $sortOrderByName = 'asc'; // Default sorting order
 if (isset($_GET['sort']) && $_GET['sort'] === 'name') {
     $sortOrderByName = toggleOrder($_GET['order']);
