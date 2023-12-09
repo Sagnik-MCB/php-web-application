@@ -17,6 +17,8 @@ include 'header.php';
     </div>
 
     <script>
+        let idClickedCount = 0;
+        let nameClickedCount = 0;
         // Async loading for images ensuring smooth scrolling
         document.addEventListener('DOMContentLoaded', function () {
             const images = document.querySelectorAll('img');
@@ -35,11 +37,14 @@ include 'header.php';
                 if (xhr.readyState == 4 && xhr.status == 200) {
                     // Load table after fetch
                     document.getElementById('recordsContainer').innerHTML = xhr.responseText;
+                    attachSortHandlers(); 
                 }
             };
             xhr.open("GET", "phpScripts.php?action=getRecords", true);
             xhr.send();
         }
+
+        // Function to edit record
 
         function editRecord(id) {
             // Perform an AJAX request to fetch the edit form
@@ -57,6 +62,7 @@ include 'header.php';
             document.getElementById('editFormContainer').scrollIntoView({ behavior: 'smooth' });
         }
 
+        // Function to view record
         function viewRecord(id) {
             // Perform an AJAX request to fetch the view form
             var xhr = new XMLHttpRequest();
@@ -73,6 +79,7 @@ include 'header.php';
             document.getElementById('editFormContainer').scrollIntoView({ behavior: 'smooth' });
         }
 
+        // Function to delete record
         function deleteRecord(id) {
             // Confirm deletion with the user
             if (confirm('Are you sure you want to delete this record?')) {
@@ -80,8 +87,8 @@ include 'header.php';
                 var xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState == 4 && xhr.status == 200) {
-                        // Load the updated HTML content after deletion
-                        loadFormHtml(xhr.responseText);
+                        // Load the updated table after saving
+                        document.getElementById('recordsContainer').innerHTML = xhr.responseText;
                     }
                 };
                 xhr.open("POST", "phpScripts.php", true);
@@ -100,6 +107,7 @@ include 'header.php';
             document.getElementById('editFormContainer').innerHTML = formHtml;
         }
 
+        // Function to save on edit
         function saveEdit(id) {
             // Get form data
             var formData = new FormData(document.getElementById('editForm'));
@@ -118,6 +126,44 @@ include 'header.php';
             };
             xhr.open("POST", "phpScripts.php", true);
             xhr.send(formData);
+        }
+
+        // Function to attach click handlers for sorting
+        function attachSortHandlers() {
+            const sortLinks = document.querySelectorAll('th a');
+            let isAsc = true;
+
+            sortLinks.forEach(link => {
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const sortKey = link.getAttribute('data-sort');
+
+                    if (sortKey === "id") {
+                        idClickedCount++;
+                        isAsc = idClickedCount % 2 !== 0;
+                    } else {
+                        nameClickedCount++;
+                        isAsc = nameClickedCount % 2 !== 0;
+                    }
+                    
+                    const sortOrder = isAsc ? 'desc' : 'asc'; // Toggle between asc and desc
+                    sortTable(link, sortKey, sortOrder);
+                });
+            });
+        }
+
+        // Function to sort the table
+        function sortTable(link, sortKey, sortOrder) {
+            var xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4 && xhr.status == 200) {
+                    document.getElementById('recordsContainer').innerHTML = xhr.responseText;
+                    attachSortHandlers();
+                }
+            };
+            xhr.open("GET", "phpScripts.php?action=getRecords&sort=" + sortKey + "&order=" + sortOrder, true);
+            xhr.send();
         }
     </script>
 </body>

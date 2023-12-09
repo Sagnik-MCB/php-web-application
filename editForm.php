@@ -1,4 +1,4 @@
-<form id="editForm">
+<form id="editForm" enctype="multipart/form-data">
     <!-- Edit form fields go here, pre-populated with data from $record -->
     <div class="mb-2">
         <label for="name">Name:</label>
@@ -7,7 +7,7 @@
 
     <div class="mb-2">
         <label for="image">Image:</label>
-        <input type="text" id="image" name="image" value="<?= $record['image']; ?>" class="form-control">
+        <input type="file" id="image" name="image" accept="image/*" class="form-control">
     </div>
 
     <div class="mb-2">

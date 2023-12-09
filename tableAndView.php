@@ -1,8 +1,8 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Name</th>
+            <th><a href="#" data-sort="id">ID</a></th>
+            <th><a href="#" data-sort="name">Name</a></th>
             <th>Image</th>
             <th>Address</th>
             <th>Gender</th>
@@ -12,8 +12,8 @@
     <tbody>
         <?php foreach ($data as $item): ?>
             <tr>
-                <td><?= $item['id']; ?></td>
-                <td><?= $item['name']; ?></td>
+                <td data-key="id"><?= $item['id']; ?></td>
+                <td data-key="name"><?= $item['name']; ?></td>
                 <td><img src="images/<?= $item['image']; ?>" alt="Image" class="img-thumbnail" style="width: 100px; height: 100px;"></td>
                 <td><?= $item['address']; ?></td>
                 <td><?= $item['gender']; ?></td>
