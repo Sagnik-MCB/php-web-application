@@ -1,78 +1,4 @@
 <?php
-// Below is dummy data for the application
-$data = [
-    [
-        'id' => 1,
-        'name' => 'Tester',
-        'image' => 'Default.jpg',
-        'address' => 'Test Address',
-        'gender' => 'Male',
-    ],
-    [
-        'id' => 2,
-        'name' => 'Tester Two',
-        'image' => 'test 2.jpg',
-        'address' => 'Test Address 2',
-        'gender' => 'Female',
-    ],
-    [
-        'id' => 3,
-        'name' => 'Tester Three',
-        'image' => 'test 3.jpg',
-        'address' => 'Test Address 3',
-        'gender' => 'Male',
-    ],
-    [
-        'id' => 4,
-        'name' => 'Tester Four',
-        'image' => 'test 4.jpg',
-        'address' => 'Test Address 4',
-        'gender' => 'Female',
-    ],
-    [
-        'id' => 5,
-        'name' => 'Tester Five',
-        'image' => 'test 5.jpg',
-        'address' => 'Test Address 5',
-        'gender' => 'Male',
-    ],
-    [
-        'id' => 6,
-        'name' => 'Tester Six',
-        'image' => 'test 6.jpg',
-        'address' => 'Test Address 6',
-        'gender' => 'Female',
-    ],
-    [
-        'id' => 7,
-        'name' => 'Tester Seven',
-        'image' => 'test 7.jpg',
-        'address' => 'Test Address 7',
-        'gender' => 'Male',
-    ],
-    [
-        'id' => 8,
-        'name' => 'Tester Eight',
-        'image' => 'test 8.jpg',
-        'address' => 'Test Address 8',
-        'gender' => 'Female',
-    ],
-    [
-        'id' => 9,
-        'name' => 'Tester Nine',
-        'image' => 'test 9.jpg',
-        'address' => 'Test Address 9',
-        'gender' => 'Male',
-    ],
-    [
-        'id' => 10,
-        'name' => 'Tester Ten',
-        'image' => 'test 10.jpg',
-        'address' => 'Test Address 10',
-        'gender' => 'Female',
-    ],
-    // Add more data as needed
-];
 
 // Function to toggle sorting order
 function toggleOrder($currentOrder)
@@ -112,5 +38,107 @@ if (isset($_GET['sort']) && $_GET['sort'] === 'name') {
             return strcmp($b['name'], $a['name']);
         });
     }
+}
+
+// Load data from a file or set initial data
+$dataFilePath = 'data.json';
+$data = file_exists($dataFilePath) ? json_decode(file_get_contents($dataFilePath), true) : [];
+
+// Handle form submissions and AJAX requests
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) {
+        if ($_POST['action'] === 'loadEditForm') {
+            $id = $_POST['id'];
+
+            // Find the record in the data array
+            $record = null;
+            foreach ($data as $item) {
+                if ($item['id'] == $id) {
+                    $record = $item;
+                    break;
+                }
+            }
+
+            // Load and display the edit form
+            include 'editForm.php';
+            exit;
+        } elseif ($_POST['action'] === 'loadViewForm') {
+            $id = $_POST['id'];
+
+            // Find the record in the data array
+            $record = null;
+            foreach ($data as $item) {
+                if ($item['id'] == $id) {
+                    $record = $item;
+                    break;
+                }
+            }
+
+            // Load and display the view form
+            include 'viewForm.php';
+            exit;
+        } elseif ($_POST['action'] === 'saveEdit') {
+            $id = $_POST['id'];
+
+            // Update the $data array with the submitted values
+            foreach ($data as &$item) {
+                if ($item['id'] == $id) {
+                    $item['name'] = $_POST['name'];
+                    $item['image'] = $_POST['image'];
+                    $item['address'] = $_POST['address'];
+                    $item['gender'] = $_POST['gender'];
+                    break; // Stop iterating once the item is found
+                }
+            }
+
+            // Save the updated $data array to a file
+            file_put_contents($dataFilePath, json_encode($data));
+
+            // Respond with the updated HTML content
+            echo generateTableAndView($data);
+            exit;
+        } elseif ($_POST['action'] === 'deleteRecord') {
+            $idToDelete = $_POST['id'];
+
+            // Find the index of the record to delete
+            $indexToDelete = null;
+            foreach ($data as $index => $item) {
+                if ($item['id'] == $idToDelete) {
+                    $indexToDelete = $index;
+                    break;
+                }
+            }
+
+            // Remove the record from the $data array
+            if ($indexToDelete !== null) {
+                array_splice($data, $indexToDelete, 1);
+            }
+
+            // Save the updated $data array to a file
+            file_put_contents($dataFilePath, json_encode($data));
+
+            // Respond with the updated HTML content
+            echo generateTableAndView($data);
+            exit;
+        }
+    }
+}
+
+// Function to generate HTML content for the table and view mode
+function generateTableAndView($data) {
+    ob_start(); // Start output buffering
+
+    // Generate HTML for the table and view mode using $data
+    include 'tableAndView.php';
+
+    $output = ob_get_clean(); // Get the buffered content
+
+    return $output;
+}
+
+// Handle AJAX request for fetching records
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'getRecords') {
+    echo generateTableAndView($data);
+    exit;
 }
 ?>
