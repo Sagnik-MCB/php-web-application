@@ -1,6 +1,7 @@
 <?php
 
 $sortOrder = "asc";
+$data = fetchSortedData();
 // Handle form submissions and AJAX requests
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action'])) {
@@ -48,6 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
+            $dataFilePath = 'data.json';
+
             // Save the updated $data array to a file
             file_put_contents($dataFilePath, json_encode($data));
 
@@ -83,6 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 array_splice($data, $indexToDelete, 1);
             }
 
+            $dataFilePath = 'data.json';
             // Save the updated $data array to a file
             file_put_contents($dataFilePath, json_encode($data));
 
@@ -107,7 +111,6 @@ function generateTableAndView($data) {
 
 // Handle AJAX request for fetching records
 if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'getRecords') {
-    $data = fetchSortedData();
     echo generateTableAndView($data);
     exit;
 }
